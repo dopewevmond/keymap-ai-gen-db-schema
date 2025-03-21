@@ -13,7 +13,7 @@ const TableNode = ({ data }: NodeProps<TableNodeData>) => {
   const rowHeight = 28;
   return (
     <div className="bg-card border rounded-md shadow-sm overflow-visible">
-      <div className="bg-primary text-primary-foreground font-medium p-2 text-center">
+      <div className="bg-[#F3F3F3] text-[#0E121B] font-semibold p-2 text-center capitalize">
         {data.label}
       </div>
       <div className="p-2">
@@ -21,7 +21,7 @@ const TableNode = ({ data }: NodeProps<TableNodeData>) => {
           return (
             <div
               key={index}
-              className="flex items-center justify-between py-1 border-b border-border/50 last:border-0"
+              className="flex items-center justify-between py-6"
               style={{ height: `${rowHeight}px`, position: "relative" }}
             >
               <div className="flex items-center">
@@ -37,7 +37,7 @@ const TableNode = ({ data }: NodeProps<TableNodeData>) => {
                 )}
                 <span className="text-sm">{column.name}</span>
               </div>
-              <span className="text-xs text-muted-foreground">
+              <span className="text-xs text-[#0E121B]">
                 {column.type}
               </span>
 
