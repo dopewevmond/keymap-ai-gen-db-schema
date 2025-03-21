@@ -1,26 +1,16 @@
 "use client";
 
+import { ColumnForReactFlow } from "@/lib/dbml-convert";
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "reactflow";
 
-interface Column {
-  name: string;
-  type: string;
-  isPrimaryKey?: boolean;
-  isForeignKey?: boolean;
-}
-
 interface TableNodeData {
   label: string;
-  columns: Column[];
-  primaryKey?: string;
+  columns: ColumnForReactFlow[];
 }
 
 const TableNode = ({ data }: NodeProps<TableNodeData>) => {
-  // Calculate the total height based on number of columns
-  const rowHeight = 28; // Height of each row in pixels
-  // const headerHeight = 40; // Height of the header in pixels
-
+  const rowHeight = 28;
   return (
     <div className="bg-card border rounded-md shadow-sm overflow-visible">
       <div className="bg-primary text-primary-foreground font-medium p-2 text-center">
@@ -51,7 +41,6 @@ const TableNode = ({ data }: NodeProps<TableNodeData>) => {
                 {column.type}
               </span>
 
-              {/* Add handles for connections */}
               {column.isPrimaryKey && (
                 <Handle
                   id={column.name}

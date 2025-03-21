@@ -1,7 +1,7 @@
-"use client"
+"use client";
 
-import type React from "react"
-import { useEffect, useState, useCallback } from "react"
+import type React from "react";
+import { useEffect, useState, useCallback } from "react";
 import ReactFlow, {
   MiniMap,
   Controls,
@@ -10,53 +10,46 @@ import ReactFlow, {
   useEdgesState,
   Panel,
   ConnectionLineType,
-} from "reactflow"
-import "reactflow/dist/style.css"
-import { parseDatabaseToERForReactFlow } from "@/lib/er-reactflow"
-import TableNode from "@/components/TableNode"
+} from "reactflow";
+import "reactflow/dist/style.css";
+import { parseDatabaseToERForReactFlow } from "@/lib/er-reactflow";
+import TableNode from "@/components/TableNode";
+import { DatabaseForReactFlow } from "@/lib/dbml-convert";
 
 interface Props {
-  database: any
-}
-
-// Helper function to convert database ER model to ReactFlow format
-// This would replace your existing parseDatabaseToER function
-const convertToReactFlowFormat = (database: any) => {
-  // This is a placeholder for your actual conversion logic
-  // You would implement this based on your database structure
-  return parseDatabaseToERForReactFlow(database)
+  database: DatabaseForReactFlow;
 }
 
 const nodeTypes = {
   tableNode: TableNode,
-}
+};
 
 const ERDiagramViewer: React.FC<Props> = ({ database }) => {
-  const [nodes, setNodes, onNodesChange] = useNodesState([])
-  const [edges, setEdges, onEdgesChange] = useEdgesState([])
-  const [isLayouting, setIsLayouting] = useState(false)
+  const [nodes, setNodes, onNodesChange] = useNodesState([]);
+  const [edges, setEdges, onEdgesChange] = useEdgesState([]);
+  const [isLayouting, setIsLayouting] = useState(false);
 
-  // Apply layout when database changes
   useEffect(() => {
-    if (!database) return
+    if (!database) return;
 
     try {
-      setIsLayouting(true)
-      const { nodes: flowNodes, edges: flowEdges } = convertToReactFlowFormat(database)
+      setIsLayouting(true);
+      const { nodes: flowNodes, edges: flowEdges } =
+        parseDatabaseToERForReactFlow(database);
 
-      setNodes(flowNodes)
-      setEdges(flowEdges)
+      setNodes(flowNodes);
+      setEdges(flowEdges);
     } catch (error) {
-      console.error("Error parsing database:", error)
+      console.error("Error parsing database:", error);
     } finally {
-      setIsLayouting(false)
+      setIsLayouting(false);
     }
-  }, [database, setNodes, setEdges])
+  }, [database, setNodes, setEdges]);
 
   // Handle node drag stopping - you could add custom logic here
   const onNodeDragStop = useCallback(() => {
     // Optional: Save node positions or trigger other actions
-  }, [])
+  }, []);
 
   return (
     <div className="w-full h-[600px] bg-background border rounded-md">
@@ -86,8 +79,7 @@ const ERDiagramViewer: React.FC<Props> = ({ database }) => {
         )}
       </ReactFlow>
     </div>
-  )
-}
+  );
+};
 
-export default ERDiagramViewer
-
+export default ERDiagramViewer;

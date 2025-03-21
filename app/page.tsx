@@ -5,10 +5,16 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import ERDiagramViewer from "@/components/ERDiagramViewer";
+import { Parser } from "@dbml/core";
+import { convertDBMLToReactFlowFormat } from "@/lib/dbml-convert";
+
+const parser = new Parser();
 
 export default function Home() {
   const [inputValue, setInputValue] = useState("");
-  const [messages, setMessages] = useState<string[]>([]);
+  const [messages, setMessages] = useState<string[]>([""]);
+  const dbml = parser.parse(dbmlContent, "dbml");
+  const transformedDatabase = convertDBMLToReactFlowFormat(dbml);
 
   return (
     <div className="w-full bg-white overflow-hidden flex flex-col min-h-screen">
@@ -30,7 +36,7 @@ export default function Home() {
         {messages?.length > 0 ? (
           <>
             <div className="flex-1 w-full text-center flex items-center justify-center">
-              <ERDiagramViewer database={exampleDatabase} />
+              <ERDiagramViewer database={transformedDatabase} />
             </div>
 
             <div className="space-y-6 mb-2.5">
@@ -78,65 +84,32 @@ export default function Home() {
   );
 }
 
-const exampleDatabase = {
-  tables: [
-    {
-      id: "users",
-      name: "Users",
-      columns: [
-        { name: "id", type: "uuid", isPrimaryKey: true },
-        { name: "username", type: "varchar(50)" },
-        { name: "email", type: "varchar(100)" },
-        { name: "created_at", type: "timestamp" },
-      ],
-      primaryKey: "id",
-    },
-    {
-      id: "posts",
-      name: "Posts",
-      columns: [
-        { name: "id", type: "uuid", isPrimaryKey: true },
-        { name: "title", type: "varchar(100)" },
-        { name: "content", type: "text" },
-        { name: "user_id", type: "uuid", isForeignKey: true },
-        { name: "created_at", type: "timestamp" },
-      ],
-      primaryKey: "id",
-    },
-    {
-      id: "comments",
-      name: "Comments",
-      columns: [
-        { name: "id", type: "uuid", isPrimaryKey: true },
-        { name: "content", type: "text" },
-        { name: "user_id", type: "uuid", isForeignKey: true },
-        { name: "post_id", type: "uuid", isForeignKey: true },
-        { name: "created_at", type: "timestamp" },
-      ],
-      primaryKey: "id",
-    },
-  ],
-  relationships: [
-    {
-      sourceTable: "users",
-      targetTable: "posts",
-      sourceColumn: "id",
-      targetColumn: "user_id",
-      type: "1:N",
-    },
-    {
-      sourceTable: "users",
-      targetTable: "comments",
-      sourceColumn: "id",
-      targetColumn: "user_id",
-      type: "1:N",
-    },
-    {
-      sourceTable: "posts",
-      targetTable: "comments",
-      sourceColumn: "id",
-      targetColumn: "post_id",
-      type: "1:N",
-    },
-  ],
-};
+const dbmlContent = `
+Table follows {
+  following_user_id integer
+  followed_user_id integer
+  created_at timestamp 
+}
+
+Table users {
+  id integer [primary key]
+  username varchar
+  role varchar
+  created_at timestamp
+}
+
+Table posts {
+  id integer [primary key]
+  title varchar
+  body text [note: 'Content of the post']
+  user_id integer [not null]
+  status varchar
+  created_at timestamp
+}
+
+Ref user_posts: posts.user_id > users.id // many-to-one
+
+Ref: users.id < follows.following_user_id
+
+Ref: users.id < follows.followed_user_id
+`;
