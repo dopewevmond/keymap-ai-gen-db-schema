@@ -1,6 +1,6 @@
 "use client";
 import { useState } from "react";
-import { ArrowUp, Leaf, Menu } from "lucide-react";
+import { ArrowUp } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
@@ -19,14 +19,21 @@ export default function Home() {
   return (
     <div className="w-full bg-white overflow-hidden flex flex-col min-h-screen">
       <header className="flex items-center justify-between px-6 py-4 border-b">
-        <div className="flex items-center gap-2">
-          <Leaf className="h-5 w-5" />
+        <div className="flex items-center gap-1">
+          <svg className="w-8 h-8">
+            <use href="/sprite.svg#logo" />
+          </svg>
           <span className="font-medium text-lg">KeyMap</span>
         </div>
-        <div className="flex items-center gap-4">
-          <Menu className="h-5 w-5 text-gray-500" />
-          <Avatar className="h-8 w-8">
-            <AvatarImage src="/placeholder.svg" alt="User" />
+        <div>
+          <p className="text-[#0D0D0D]">Employee Management Database</p>
+        </div>
+        <div className="flex items-center gap-2">
+          <svg className="w-10 h-10">
+          <use href="/sprite.svg#button-history" />
+          </svg>
+          <Avatar className="h-10 w-10">
+            <AvatarImage src="/avatar.png" alt="" />
             <AvatarFallback>U</AvatarFallback>
           </Avatar>
         </div>

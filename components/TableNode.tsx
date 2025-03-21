@@ -21,7 +21,7 @@ const TableNode = ({ data }: NodeProps<TableNodeData>) => {
           return (
             <div
               key={index}
-              className="flex items-center justify-between py-6"
+              className="flex items-center justify-between py-4"
               style={{ height: `${rowHeight}px`, position: "relative" }}
             >
               <div className="flex items-center">
