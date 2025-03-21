@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Textarea } from "@/components/ui/textarea";
 import { cn } from "@/lib/utils";
 import ERDiagramViewer from "@/components/ERDiagramViewer";
@@ -15,6 +15,45 @@ const Home = () => {
 
   const dbml = parser.parse(dbmlContent, "dbml");
   const transformedDatabase = convertDBMLToReactFlowFormat(dbml);
+
+  useEffect(() => {
+    const fetchData = async () => {
+      const response = await fetch("/api/ai", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({}),
+      });
+
+      if (!response.body) {
+        // setIsLoadingAIResponse("error");
+        return;
+      }
+
+      const reader = response?.body?.getReader();
+      if (!reader) return;
+
+      const decoder = new TextDecoder();
+      let done = false;
+
+      while (!done) {
+        const { value, done: readerDone } = await reader.read();
+        if (value) {
+          console.log(decoder.decode(value));
+          // flushSync(() => {
+          //   setResponseText((prev) => prev + decoder.decode(value));
+          // });
+        }
+        done = readerDone;
+      }
+      // setIsLoadingAIResponse("done");
+    };
+
+    fetchData();
+     
+  }, []);
+
   return (
     <>
       <main className="flex-1 flex flex-col items-center justify-center p-6 gap-8">
