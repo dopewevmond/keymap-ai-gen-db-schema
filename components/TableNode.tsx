@@ -1,6 +1,6 @@
 "use client";
 
-import { ColumnForReactFlow } from "@/lib/dbml-convert";
+import { ColumnForReactFlow } from "@/lib/types";
 import { memo } from "react";
 import { Handle, Position, type NodeProps } from "reactflow";
 
@@ -37,9 +37,7 @@ const TableNode = ({ data }: NodeProps<TableNodeData>) => {
                 )}
                 <span className="text-sm">{column.name}</span>
               </div>
-              <span className="text-xs text-[#0E121B]">
-                {column.type}
-              </span>
+              <span className="text-xs text-[#0E121B]">{column.type}</span>
 
               {column.isPrimaryKey && (
                 <Handle

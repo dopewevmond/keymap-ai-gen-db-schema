@@ -1,6 +1,6 @@
 import type { Node, Edge, MarkerType } from "reactflow";
 import dagre from "dagre";
-import { ColumnForReactFlow, DatabaseForReactFlow } from "./dbml-convert";
+import { ColumnForReactFlow, DatabaseForReactFlow } from "./types";
 
 export function parseDatabaseToERForReactFlow(database: DatabaseForReactFlow) {
   const nodes: Node[] = [];

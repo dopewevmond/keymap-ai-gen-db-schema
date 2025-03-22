@@ -12,9 +12,9 @@ import ReactFlow, {
   ConnectionLineType,
 } from "reactflow";
 import "reactflow/dist/style.css";
-import { parseDatabaseToERForReactFlow } from "@/lib/er-reactflow";
+import { parseDatabaseToERForReactFlow } from "@/lib/parseDatabaseToERForReactFlow";
 import TableNode from "@/components/TableNode";
-import { DatabaseForReactFlow } from "@/lib/dbml-convert";
+import { DatabaseForReactFlow } from "@/lib/types";
 
 interface Props {
   database: DatabaseForReactFlow;
@@ -52,7 +52,7 @@ const ERDiagramViewer: React.FC<Props> = ({ database }) => {
   }, []);
 
   return (
-    <div className="w-full h-[600px] bg-background border rounded-md">
+    <div className="w-full h-[50vh] bg-background border rounded-md">
       <ReactFlow
         nodes={nodes}
         edges={edges}

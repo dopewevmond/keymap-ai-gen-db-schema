@@ -1,30 +1,31 @@
 "use client";
-import Home from "@/components/Home";
-import Navbar from "@/components/Navbar";
-import ProjectsList from "@/components/ProjectsList";
-
-import { useState } from "react";
-
-const projects = [
-  { slug: "project-alpha", title: "Project Alpha" },
-  { slug: "project-beta", title: "Project Beta" },
-  { slug: "project-gamma", title: "Project Gamma" },
-  { slug: "project-delta", title: "Project Delta" },
-  { slug: "project-epsilon", title: "Project Epsilon" },
-];
+import ChatInput from "@/components/ChatInput";
+import { MessageContext } from "@/components/ReactQueryClientWrapper";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
+import { flushSync } from "react-dom";
 
 export default function Index() {
-  const [isProjectsListOpen, setIsProjectsListOpen] = useState(false);
+  const router = useRouter();
+  const { setMessage } = useContext(MessageContext);
+  const handleSubmit = async (value: string) => {
+    flushSync(() => {
+      setMessage(value);
+    });
+    const uuid = crypto.randomUUID();
+    router.push(`/chat/${uuid}`);
+  };
+
   return (
-    <div className="w-full bg-white overflow-hidden flex flex-col min-h-screen relative">
-      <Navbar />
-      {isProjectsListOpen ? (
-        <ProjectsList projects={projects} />
-      ) : (
-        <>
-          <Home />
-        </>
-      )}
-    </div>
+    <>
+      <main className="flex-1 flex flex-col items-center justify-center p-6 gap-8">
+        <h1 className="text-2xl font-medium mb-2">
+          Welcome, <span className="italic">User</span>.
+        </h1>
+        <p className="text-xl text-gray-500">What are we building today?</p>
+      </main>
+
+      <ChatInput handleSubmit={handleSubmit} />
+    </>
   );
 }

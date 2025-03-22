@@ -1,5 +1,8 @@
-import { Plus } from "lucide-react";
+"use client"
 import React from "react";
+import { Plus } from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import axios from "axios";
 
 type Props = {
   projects: {
@@ -9,6 +12,11 @@ type Props = {
 };
 
 const ProjectsList = (props: Props) => {
+  const { data, status } = useQuery({
+    queryKey: ['conversations'],
+    queryFn: () => axios.get('/api/conversations').then(r => r.data)
+  })
+
   return (
     <section className="flex-1 flex flex-col items-center justify-center p-6 gap-8">
       <ul className="flex flex-col gap-5">
