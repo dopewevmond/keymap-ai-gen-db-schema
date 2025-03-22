@@ -1,6 +1,11 @@
 import { z } from "zod";
 
 // types
+export type TokenPayloadType = {
+  _id: string;
+  username: string;
+};
+
 export type AnonymousLoginResponse = {
   _id: string;
   username: string;
@@ -29,6 +34,15 @@ export type RelationshipForReactFlow = {
 export type DatabaseForReactFlow = {
   tables: TableForReactFlow[];
   relationships: RelationshipForReactFlow[];
+};
+
+export type ParsedOpenAIStructuredResponse = {
+  databaseSchema: DatabaseForReactFlow;
+  message: {
+    content: string;
+    _id: string;
+  };
+  title: string;
 };
 
 
@@ -66,10 +80,12 @@ const MessageSchema = z.object({
 export const AIRequestTypeSchema = z.object({
   messages: z.array(MessageSchema),
   databaseSchema: DatabaseForReactFlowSchema.optional(),
+  conversationId: z.string(),
 });
 
 export const AIResponseTypeSchema = z.object({
   databaseSchema: DatabaseForReactFlowSchema,
+  title: z.string(),
   message: z.object({
     content: z.string(),
     _id: z.string(),

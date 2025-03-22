@@ -5,11 +5,15 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 export type MessageContextType = {
   message: string;
   setMessage: (newMessage: string) => void;
+  username: string;
+  setUsername: (username: string) => void;
 };
 
-export const MessageContext = createContext<MessageContextType>({
+export const AppContext = createContext<MessageContextType>({
   message: "",
   setMessage: () => {},
+  username: "",
+  setUsername: () => {},
 });
 
 const queryClient = new QueryClient();
@@ -20,12 +24,15 @@ type Props = {
 
 const ReactQueryClientWrapper = (props: Props) => {
   const [message, setMessage] = useState<string>("");
+  const [username, setUsername] = useState<string>("");
 
   return (
     <QueryClientProvider client={queryClient}>
-      <MessageContext.Provider value={{ message, setMessage }}>
+      <AppContext.Provider
+        value={{ message, username, setMessage, setUsername }}
+      >
         {props.children}
-      </MessageContext.Provider>
+      </AppContext.Provider>
     </QueryClientProvider>
   );
 };

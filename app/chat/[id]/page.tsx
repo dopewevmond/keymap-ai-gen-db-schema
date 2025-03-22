@@ -1,23 +1,21 @@
 "use client";
 // import React, { Usable, useContext, useEffect, useRef, useState } from "react";
-import React, { useContext, useEffect, useRef, useState } from "react";
+import React, { Usable, useContext, useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import ERDiagramViewer from "@/components/ERDiagramViewer";
 import { convertToDBMLDatabaseSchema } from "@/lib/convertToDBMLDatabaseSchema";
-import { MessageContext } from "@/components/ReactQueryClientWrapper";
+import { AppContext } from "@/components/ReactQueryClientWrapper";
 import ChatInput from "@/components/ChatInput";
 import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import { Loader2 } from "lucide-react";
 import Link from "next/link";
 import { importer, exporter } from "@dbml/core";
-import { DatabaseForReactFlow } from "@/lib/types";
+import {
+  DatabaseForReactFlow,
+  ParsedOpenAIStructuredResponse,
+} from "@/lib/types";
 
-// type ChatPageProps = {
-//   params: {
-//     id: string;
-//   };
-// };
 type Message = {
   _id: string;
   role: "system" | "user" | "assistant";
@@ -27,28 +25,27 @@ type Message = {
 type AIRequestType = {
   messages: Message[];
   databaseSchema?: DatabaseForReactFlow;
+  conversationId: string;
 };
 
-type ParsedOpenAIContent = {
-  databaseSchema: DatabaseForReactFlow;
-  message: {
-    content: string;
-    _id: string;
-  };
-};
 type AIResponseType = {
   role: "system" | "user" | "assistant";
   content: string;
 };
 
-export default function ChatPage() {
-  // export default function ChatPage({ params }: ChatPageProps) {
-  // const unwrappedParams = React.use(
-  //   params as unknown as Usable<{ id: string }>
-  // );
+type ChatPageProps = {
+  params: {
+    id: string;
+  };
+};
+
+export default function ChatPage({ params }: ChatPageProps) {
+  const unwrappedParams = React.use(
+    params as unknown as Usable<{ id: string }>
+  );
 
   const [messages, setMessages] = useState<Message[]>([]);
-  const { message } = useContext(MessageContext);
+  const { message } = useContext(AppContext);
   const [databaseSchema, setDatabaseSchema] = useState<
     DatabaseForReactFlow | undefined
   >();
@@ -57,7 +54,9 @@ export default function ChatPage() {
     mutationFn: (data: AIRequestType) =>
       axios.post<AIResponseType>("/api/chat", data).then((r) => r.data),
     onSuccess(data) {
-      const structuredOutput = JSON.parse(data?.content) as ParsedOpenAIContent;
+      const structuredOutput = JSON.parse(
+        data?.content
+      ) as ParsedOpenAIStructuredResponse;
       setDatabaseSchema(structuredOutput.databaseSchema);
       setMessages((msgs) => [
         ...msgs,
@@ -77,7 +76,11 @@ export default function ChatPage() {
       { _id, content, role: "user" },
     ];
     setMessages(newMessagePayload);
-    mutate({ messages: newMessagePayload, databaseSchema });
+    mutate({
+      messages: newMessagePayload,
+      databaseSchema,
+      conversationId: unwrappedParams.id,
+    });
   };
 
   const sendNewMessageRef = useRef<typeof sendNewMessage | null>(
@@ -105,6 +108,8 @@ export default function ChatPage() {
       console.log(err);
     }
   };
+
+  console.log(messages);
 
   return (
     <>

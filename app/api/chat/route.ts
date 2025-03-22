@@ -1,11 +1,59 @@
-import { AIRequestTypeSchema, AIResponseTypeSchema } from "@/lib/types";
+import { CustomError } from "@/lib/CustomError";
+import {
+  AIRequestTypeSchema,
+  AIResponseTypeSchema,
+  TokenPayloadType,
+  ParsedOpenAIStructuredResponse,
+} from "@/lib/types";
+import { cookies } from "next/headers";
 import OpenAI from "openai";
 import { zodResponseFormat } from "openai/helpers/zod";
+import { verify, type JwtPayload } from "jsonwebtoken";
+import Conversation, { IMessage } from "@/models/Conversation";
+import mongoose from "mongoose";
 
 export async function POST(req: Request) {
   try {
+    const cookieStore = await cookies();
+    const tokenValue = cookieStore.get("token")?.value;
+
+    if (tokenValue == null)
+      throw new CustomError("Unauthorized: Token not found", 401);
+
+    // we'll need to check for conversation id
+
+    let userId: string;
+    try {
+      const { _id } = verify(
+        tokenValue,
+        process.env.SECRET_KEY!
+      ) as JwtPayload & TokenPayloadType;
+      userId = _id;
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    } catch (_err) {
+      throw new CustomError("Unauthorized: Invalid token", 401);
+    }
+
     const body = await req.json();
     const parsedData = AIRequestTypeSchema.parse(body);
+
+    const mostRecentMessage =
+      parsedData.messages[parsedData.messages.length - 1];
+
+    let conversation = await Conversation.findById(parsedData.conversationId);
+    if (conversation == null) {
+      conversation = new Conversation({
+        _id: parsedData.conversationId,
+        userId,
+        messages: [],
+      });
+    }
+    conversation.messages.push({
+      _id: new mongoose.Types.ObjectId().toString(),
+      role: mostRecentMessage.role,
+      content: mostRecentMessage.content,
+    } as IMessage);
+
     const openai = new OpenAI();
 
     let content = `You are a database design architect responsible for generating a database schema based on app ideas provided by the user.
@@ -36,6 +84,25 @@ export async function POST(req: Request) {
         "schemaAndExplanation"
       ),
     });
+
+    try {
+      const structuredOutput = JSON.parse(
+        completion.choices[0].message.content!
+      ) as ParsedOpenAIStructuredResponse;
+      conversation.title = structuredOutput.title;
+      conversation.databaseSchema = JSON.stringify(
+        structuredOutput.databaseSchema
+      );
+      conversation.messages.push({
+        _id: new mongoose.Types.ObjectId().toString(),
+        role: "assistant",
+        content: structuredOutput.message.content,
+      } as IMessage);
+      await conversation.save();
+    } catch (err) {
+      console.log(err);
+    }
+
     return Response.json(completion.choices[0].message);
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (err: any) {

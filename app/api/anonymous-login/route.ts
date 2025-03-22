@@ -9,11 +9,7 @@ import {
 import { CustomError } from "@/lib/CustomError";
 import mongoose from "mongoose";
 import dbConnect from "@/lib/db";
-
-type TokenPayloadType = {
-  _id: string;
-  username: string;
-};
+import { TokenPayloadType } from "@/lib/types";
 
 export async function POST() {
   try {
