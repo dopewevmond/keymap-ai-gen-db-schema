@@ -3,9 +3,11 @@ import Conversation from "@/models/Conversation";
 import { cookies } from "next/headers";
 import { verify, type JwtPayload } from "jsonwebtoken";
 import { TokenPayloadType } from "@/lib/types";
+import dbConnect from "@/lib/db";
 
 export async function GET() {
   try {
+    await dbConnect();
     const cookieStore = await cookies();
     const tokenValue = cookieStore.get("token")?.value;
 

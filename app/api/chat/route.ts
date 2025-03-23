@@ -11,9 +11,11 @@ import { zodResponseFormat } from "openai/helpers/zod";
 import { verify, type JwtPayload } from "jsonwebtoken";
 import Conversation, { IMessage } from "@/models/Conversation";
 import mongoose from "mongoose";
+import dbConnect from "@/lib/db";
 
 export async function POST(req: Request) {
   try {
+    await dbConnect();
     const cookieStore = await cookies();
     const tokenValue = cookieStore.get("token")?.value;
 
