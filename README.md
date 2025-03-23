@@ -1,36 +1,59 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI Database Schema Creator
 
-## Getting Started
+## Overview
 
-First, run the development server:
+This project is a web application that allows users to design database schemas interactively with AI assistance. Users describe their database needs, and the system generates a schema that can be viewed, shared, and downloaded.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## Tech Stack
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+- **Next.js**: Full-stack framework combining React for UI and API route handlers for backend logic.
+- **OpenAI**: Generates structured database schemas based on user input.
+- **React Flow**: Renders interactive database schema diagrams.
+- **@dbml/core**: Converts database schema between DBML and SQL.
+- **Zod**: Validates data across frontend and backend.
+- **Tailwind & shadcn/ui**: Provides a modern UI design.
+- **MongoDB**: Stores user sessions and conversation history.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Features
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### Frontend
 
-## Learn More
+- Responsive UI following Figma design with added loading states for better UX.
+- Users enter a prompt describing their database, initiating a chat with the AI.
+- Schema visualization in an interactive React Flow widget.
+- Conversations are saved, allowing users to revisit and share project URLs.
+- Users can download schemas as SQL.
+- Anonymous login via secure cookies.
+- Only project creators can edit shared projects.
 
-To learn more about Next.js, take a look at the following resources:
+### Backend
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Next.js API routes handle AI interactions and database operations.
+- Stores user sessions and schema conversations in MongoDB.
+- AI receives structured input and maintains conversation history for better context.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Schema Generation Approach
+The AI model generates the schema in the CDBS format based on the conversation with the user. DBML was not used for either rendering the schema on the frontend or as the preferred AI response because it's data structure is bloated with a properties we won't need
 
-## Deploy on Vercel
+Instead of generating DBML directly, a **Custom Database Structure (CDBS)** was created for:
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- Efficient AI responses with minimal token usage since CDBS is shorter than DBML, assuming they are representing the same logical information.
+- Easier rendering in React Flow.
+- Seamless conversion to DBML, then SQL
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## AI Integration
+
+- I used OpenAI's structured output generation, ensuring that the AI response conforms to the provided schema—in this case, the custom database structure (CDBS).
+- I gave it a system prompt to act as a database design architect and instructed it to ensure that relationships (foreign keys) match the CDBS correctly.
+- Whenever a message is sent, all previous messages are included as user/AI-assistant prompts to provide additional context. The most recent schema is also passed to the model for better accuracy.
+- The system prompt also instructs the model to be interactive, guiding the user to provide more details until a complete schema is generated.
+- AI responses are not streamed because they need to be parsed, and incomplete data could break the React Flow component.
+
+## Running the Project
+
+1. Clone the repository.
+2. Install dependencies: `npm install`
+3. Set up environment variables (MongoDB, OpenAI API key) with the `.env.example` file
+4. Start the app: `npm run dev`
+
