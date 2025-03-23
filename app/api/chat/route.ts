@@ -64,7 +64,7 @@ export async function POST(req: Request) {
     const openai = new OpenAI();
 
     let content = `You are a database design architect responsible for generating a database schema based on app ideas provided by the user.
-            The id of the table should be the same as the name of the table. The source table and source column are the entity that can be related to more than one instance of the target table and target column.
+            The id of the table should be the same as the name of the table. The source table and source column are the entity that can be related to more than one instance of the target table and target column. Ensure all tables are always returned in the response.
             The response in the message section of the structured output should not be more than 2 sentences long and should prompt interactive conversation.
             `;
     if (parsedData.databaseSchema)

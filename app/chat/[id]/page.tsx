@@ -152,8 +152,10 @@ export default function ChatPage({ params }: ChatPageProps) {
 
   useEffect(() => {
     if (message && messages.length === 0) {
+      const tempMessage = message;
+      setMessage('');
       if (!sendNewMessageRef.current) return;
-      sendNewMessageRef.current(message);
+      sendNewMessageRef.current(tempMessage);
     }
   }, [
     sendNewMessageRef,
