@@ -14,7 +14,7 @@ type Props = {
 
 export default function AppLayout(props: Props) {
   const [isProjectsListOpen, setIsProjectsListOpen] = useState(false);
-  const { setUsername } = useContext(AppContext);
+  const { setUsername, setLoggedInUserId } = useContext(AppContext);
   const { mutate: authenticateUser, data } = useMutation({
     mutationFn: () =>
       axios
@@ -22,6 +22,7 @@ export default function AppLayout(props: Props) {
         .then((r) => r.data),
     onSuccess: (data) => {
       setUsername(data.username);
+      setLoggedInUserId(data._id);
     },
   });
   useEffect(() => {

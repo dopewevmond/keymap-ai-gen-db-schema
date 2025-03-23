@@ -7,10 +7,11 @@ import { flushSync } from "react-dom";
 
 export default function Index() {
   const router = useRouter();
-  const { setMessage, username } = useContext(AppContext);
+  const { setMessage, username, setProjectTitle } = useContext(AppContext);
   const handleSubmit = async (value: string) => {
     flushSync(() => {
       setMessage(value);
+      setProjectTitle("");
     });
     const uuid = crypto.randomUUID();
     router.push(`/chat/${uuid}`);
@@ -26,7 +27,7 @@ export default function Index() {
         <p className="text-xl text-gray-500">What are we building today?</p>
       </main>
 
-      <ChatInput handleSubmit={handleSubmit} />
+      <ChatInput isSubmitting={false} handleSubmit={handleSubmit} />
     </>
   );
 }

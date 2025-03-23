@@ -48,6 +48,13 @@ export async function POST(req: Request) {
         messages: [],
       });
     }
+
+    if (conversation.userId !== userId)
+      throw new CustomError(
+        "Unauthorized: User does not own this conversation",
+        401
+      );
+
     conversation.messages.push({
       _id: new mongoose.Types.ObjectId().toString(),
       role: mostRecentMessage.role,
@@ -89,7 +96,6 @@ export async function POST(req: Request) {
       const structuredOutput = JSON.parse(
         completion.choices[0].message.content!
       ) as ParsedOpenAIStructuredResponse;
-      conversation.title = structuredOutput.title;
       conversation.databaseSchema = JSON.stringify(
         structuredOutput.databaseSchema
       );
@@ -98,6 +104,9 @@ export async function POST(req: Request) {
         role: "assistant",
         content: structuredOutput.message.content,
       } as IMessage);
+      if (!conversation.title) {
+        conversation.title = structuredOutput.title;
+      }
       await conversation.save();
     } catch (err) {
       console.log(err);

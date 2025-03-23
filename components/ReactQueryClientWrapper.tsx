@@ -7,6 +7,12 @@ export type MessageContextType = {
   setMessage: (newMessage: string) => void;
   username: string;
   setUsername: (username: string) => void;
+  loggedInUserId: string;
+  setLoggedInUserId: (loggedInUserId: string) => void;
+  projectTitle: string;
+  setProjectTitle: (title: string) => void;
+  sqlContent: string;
+  setSQLContent: (sqlContent: string) => void;
 };
 
 export const AppContext = createContext<MessageContextType>({
@@ -14,6 +20,12 @@ export const AppContext = createContext<MessageContextType>({
   setMessage: () => {},
   username: "",
   setUsername: () => {},
+  projectTitle: "",
+  setProjectTitle: () => {},
+  loggedInUserId: "",
+  setLoggedInUserId: () => {},
+  sqlContent: "",
+  setSQLContent: () => {},
 });
 
 const queryClient = new QueryClient();
@@ -23,13 +35,27 @@ type Props = {
 };
 
 const ReactQueryClientWrapper = (props: Props) => {
-  const [message, setMessage] = useState<string>("");
-  const [username, setUsername] = useState<string>("");
+  const [loggedInUserId, setLoggedInUserId] = useState("");
+  const [message, setMessage] = useState("");
+  const [username, setUsername] = useState("");
+  const [projectTitle, setProjectTitle] = useState("");
+  const [sqlContent, setSQLContent] = useState("");
 
   return (
     <QueryClientProvider client={queryClient}>
       <AppContext.Provider
-        value={{ message, username, setMessage, setUsername }}
+        value={{
+          message,
+          loggedInUserId,
+          username,
+          projectTitle,
+          sqlContent,
+          setMessage,
+          setUsername,
+          setProjectTitle,
+          setLoggedInUserId,
+          setSQLContent,
+        }}
       >
         {props.children}
       </AppContext.Provider>
