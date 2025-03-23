@@ -4,6 +4,9 @@
 
 This project is a web application that allows users to design database schemas interactively with AI assistance. Users describe their database needs, and the system generates a schema that can be viewed, shared, and downloaded.
 
+## Link to live app: [https://keymap-ai-gen-db-schema.vercel.app/](https://keymap-ai-gen-db-schema.vercel.app/)
+## Link to a shared project: [https://keymap-ai-gen-db-schema.vercel.app/chat/d868f63e-8001-4f17-a5e3-e16ce24ca318](https://keymap-ai-gen-db-schema.vercel.app/chat/d868f63e-8001-4f17-a5e3-e16ce24ca318)
+
 ## Tech Stack
 
 - **Next.js**: Full-stack framework combining React for UI and API route handlers for backend logic.
@@ -56,4 +59,15 @@ Instead of generating DBML directly, a **Custom Database Structure (CDBS)** was 
 2. Install dependencies: `npm install`
 3. Set up environment variables (MongoDB, OpenAI API key) with the `.env.example` file
 4. Start the app: `npm run dev`
+
+## Screenshots
+![Desktop Homepage](https://github.com/dopewevmond/keymap-ai-gen-db-schema/blob/main/public/screenshots/desktop-homepage.png)
+![Desktop Ongoing Conversation](https://github.com/dopewevmond/keymap-ai-gen-db-schema/blob/main/public/screenshots/desktop-ongoing-conversation.png)
+![Desktop Projects View](https://github.com/dopewevmond/keymap-ai-gen-db-schema/blob/main/public/screenshots/desktop-projects-view.png)
+![Desktop Open Action Dropdown](https://github.com/dopewevmond/keymap-ai-gen-db-schema/blob/main/public/screenshots/desktop-opened-action-dropdown.png)
+![Desktop Copy or Download SQL Schema](https://github.com/dopewevmond/keymap-ai-gen-db-schema/blob/main/public/screenshots/desktop-download-copy-sql-schema.png)
+![Desktop Share Link](https://github.com/dopewevmond/keymap-ai-gen-db-schema/blob/main/public/screenshots/desktop-share-link.png)
+![Mobile Homepage](https://github.com/dopewevmond/keymap-ai-gen-db-schema/blob/main/public/screenshots/mobile-homepage.png)
+![Mobile Ongoing Conversation](https://github.com/dopewevmond/keymap-ai-gen-db-schema/blob/main/public/screenshots/mobile-ongoing-conversation.png)
+![Mobile Projects View](https://github.com/dopewevmond/keymap-ai-gen-db-schema/blob/main/public/screenshots/mobile-projects-view.png)
 
