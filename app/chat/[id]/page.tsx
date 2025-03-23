@@ -42,9 +42,9 @@ type ConversationResponseType = {
 };
 
 type ChatPageProps = {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 };
 
 const convertDatabaseSchemaToSQL = (
