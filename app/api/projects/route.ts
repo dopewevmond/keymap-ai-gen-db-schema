@@ -4,10 +4,7 @@ import { cookies } from "next/headers";
 import { verify, type JwtPayload } from "jsonwebtoken";
 import { TokenPayloadType } from "@/lib/types";
 
-export async function GET(
-  _request: Request,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET() {
   try {
     const cookieStore = await cookies();
     const tokenValue = cookieStore.get("token")?.value;
@@ -15,19 +12,23 @@ export async function GET(
     if (tokenValue == null)
       throw new CustomError("Unauthorized: Token not found", 401);
 
+    let userId: string;
     try {
-      verify(tokenValue, process.env.SECRET_KEY!) as JwtPayload &
-        TokenPayloadType;
+      const { _id } = verify(
+        tokenValue,
+        process.env.SECRET_KEY!
+      ) as JwtPayload & TokenPayloadType;
+      userId = _id;
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
     } catch (_err) {
       throw new CustomError("Unauthorized: Invalid token", 401);
     }
 
-    const { id } = await params;
-    const conversation = await Conversation.findById(id);
-    if (conversation == null)
-      throw new CustomError("Conversation not found", 404);
-    return Response.json(conversation);
+    const conversations = await Conversation.find(
+      { userId },
+      { _id: 1, title: 1 },
+    ).sort({ updatedAt: -1 }).lean();
+    return Response.json(conversations);
   } catch (err) {
     console.error("Error:", err);
     return Response.json(

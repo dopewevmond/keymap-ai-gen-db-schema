@@ -20,7 +20,7 @@ export default function Index() {
   return (
     <>
       <main className="flex-1 flex flex-col items-center justify-center p-6 gap-8">
-        <h1 className="text-2xl font-medium mb-2">
+        <h1 className="text-2xl font-medium mb-2 text-center">
           Welcome, <span className="italic">User</span>{" "}
           <span className="text-purple-900">({username})</span>.
         </h1>

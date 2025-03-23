@@ -38,7 +38,13 @@ export default function AppLayout(props: Props) {
             isProjectsListOpen={isProjectsListOpen}
             toggleProjectListOpen={() => setIsProjectsListOpen((curr) => !curr)}
           />
-          {isProjectsListOpen ? <ProjectsList projects={[]} /> : props.children}
+          {isProjectsListOpen ? (
+            <ProjectsList
+              closeProjectsList={() => setIsProjectsListOpen(false)}
+            />
+          ) : (
+            props.children
+          )}
         </>
       ) : (
         <div className="absolute top-1/2 -translate-y-1/2 left-0 right-0 flex flex-col items-center justify-center gap-2">

@@ -92,7 +92,7 @@ const Navbar = (props: Props) => {
         <span className="font-medium text-lg">KeyMap</span>
       </Link>
       {pathname !== "/" && (
-        <div>
+        <div className="hidden lg:block">
           <p className="text-[#0D0D0D]">{projectTitle}</p>
         </div>
       )}

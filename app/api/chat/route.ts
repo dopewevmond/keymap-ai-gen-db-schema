@@ -20,8 +20,6 @@ export async function POST(req: Request) {
     if (tokenValue == null)
       throw new CustomError("Unauthorized: Token not found", 401);
 
-    // we'll need to check for conversation id
-
     let userId: string;
     try {
       const { _id } = verify(
@@ -65,7 +63,7 @@ export async function POST(req: Request) {
 
     let content = `You are a database design architect responsible for generating a database schema based on app ideas provided by the user.
             The id of the table should be the same as the name of the table. The source table and source column are the entity that can be related to more than one instance of the target table and target column.
-            The response in the message section of the structured output should not be more than 2 sentences long.
+            The response in the message section of the structured output should not be more than 2 sentences long and should prompt interactive conversation.
             `;
     if (parsedData.databaseSchema)
       content += `
